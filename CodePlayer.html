@@ -1,0 +1,271 @@
+<html>
+	<head>
+			<title>SAAD'S PLAYER</title>
+			
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+			<link href="jquery-ui/jquery-ui/jquery-ui.css" rel="stylesheet">
+			<script src="jquery-ui/jquery-ui/jquery-ui.js"></script>
+			
+			<style type="text/css">
+				
+				body{
+				font-family: sans-serif;
+				margin:0;
+				padding:0;
+				}
+				
+				#header{
+				width:100%;
+				background-color: #A3D60D;  
+				
+				padding:5px 5px 10px 5px;;
+				height:30px;
+				
+				
+				}
+				
+				#logo{
+				float:left;
+				font-weight:bold;
+				font-size:140%;
+				padding: 3px 5px;
+				color: white;
+				}
+				
+				#buttonContainer{
+				color: white;
+				width:250px;
+				margin: 0 auto;
+				
+				
+				}
+				
+				.toggleButton{
+					
+					
+					float:left;
+					border: 1px solid grey;
+					padding:8px;
+					border-right:none;
+					font-size: 90%;
+					
+				}
+				
+				#AboutUs{
+				color: white;
+				float:right;
+				margin-right: 30px;
+				border-right:1px solid grey;
+				border-radius: 6px;
+				}
+				
+				#dialog{
+				display: none;}
+				
+				#html{
+						border-top-left-radius: 6px;
+						border-bottom-left-radius: 6px;
+					
+				}
+				
+				#output{
+				
+					border-top-right-radius: 6px;
+                    border-bottom-right-radius: 6px;
+                    border-right: 1px solid grey;					
+				}
+            
+			
+				.active{
+					background-color: #D9F290; 
+				}
+				
+				.highlightButton{
+					background-color: #879D52;
+				}
+				
+				textarea{
+					width:50%;
+					height: 100%;
+					resize: none;
+					border-top: none;
+					border-color:grey;
+					
+				}
+				
+				.panel{
+					float:left;
+					width:50%;
+				}
+				iframe{
+						border:none;
+						
+				}
+				.hidden{
+						display: none;
+				}
+			</style>
+	</head>
+	
+	<body>
+	
+	 <div id="header">
+        
+            <div id="logo">
+            
+                CodePlayer
+                
+            </div>
+            
+            <div id="buttonContainer">
+                
+                <div class="toggleButton active" id="html">HTML</div>
+                
+                <div class="toggleButton" id="css">CSS</div>
+                
+                <div class="toggleButton" id="javascript">JavaScript</div>
+                
+                <div class="toggleButton active" id="output">Output</div>
+				
+            
+            </div>
+        
+		   <div class="toggleButton" id="AboutUs">About Us</div>
+		
+        </div>
+		
+		<div id="dialog" title="ABOUT US">
+  <p>This is a code player where you can write your code and practice coding,
+  the player compiles and runs the code as soon as you write it.<br>
+  HAPPY CODING!</p>
+</div>
+        
+        <div id="bodyContainer">
+        
+            <textarea id="htmlPanel" class="panel"><div><p id="paragraph">Hello Saad!</p>
+													<p><button id="button">Press me!<br>Change Text!</button></p>
+													<span>Start Writing Your Own Code. :)</span></div>
+													
+													</textarea>
+            
+            <textarea id="cssPanel" class="panel hidden">
+														span{
+														font-weight:bold;
+														font-size:200%;}
+														 div{margin:0 20 0 20;}														 	
+															p { color: green; }
+															#button{ background-color: #A3D60D;
+															color:white;}</textarea>
+            
+            <textarea id="javascriptPanel" class="panel hidden">document.getElementById("button").onclick = function(){
+			document.getElementById("paragraph").innerHTML = "Hello World!";
+			}</textarea>
+            
+			
+			<!--  chosen an iframe here cz iframe doesnt take on
+			the styles that are applied on the webpage. 
+			which is ideal, so that user can put their
+			own css using the cssPanel-->
+			
+            <iframe id="outputPanel" class="panel"></iframe>
+        
+        
+        </div>
+        
+        <script type="text/javascript">
+            
+            function updateOutput() {
+                
+				var html = $("#htmlPanel").val();
+				
+				var css = $("#cssPanel").val();
+				
+                $("iframe").contents().find("html").html("<html><head><style type='text/css'>" + css + "</style></head><body>" + html + "</body></html>");
+                
+				// to apply JS into the iFrame 
+				// eval evaluates a string of JS
+                document.getElementById("outputPanel").contentWindow.eval($("#javascriptPanel").val());
+                
+                
+                
+            }
+            
+			// to change button color while hovering
+            $(".toggleButton").hover(function() {
+                // to change color of the botton as user hovers on it
+                $(this).addClass("highlightedButton");
+                
+            }, function() {
+                // to remove the hovering effect once user stops to hover
+                $(this).removeClass("highlightedButton");
+                
+            });
+            
+			// to show/hide the panels when their respective button is clicked
+            $(".toggleButton").click(function() {
+                
+				// this toggles the active class on clicking the button
+                $(this).toggleClass("active");
+                
+				// removing the highlightButton class so that user immediately knows that the button has been selected
+                $(this).removeClass("highlightedButton");
+                
+				// created a variable to know the id of the button that is clicked
+                var panelId = $(this).attr("id") + "Panel";
+                
+				// this shows or hides the panel usingntoggling hidden class
+                $("#" + panelId).toggleClass("hidden");
+                
+				// $(className).length counts the number of elements(ACTIVE) with that class
+				// since maximum no. of panel is 4, we did 4 minus the no. of times hidden class is applied(ACTIVE)
+				
+                var numberOfActivePanels = 4 - $('.hidden').length;
+                
+				// dividing window width by number of active panels to divide all active panels in equal widths
+                $(".panel").width(($(window).width() / numberOfActivePanels) - 10);
+                
+            })
+			
+			
+			
+			
+			
+            // fixing height of the panels
+			// subtracting height of header from total height of page, plus extra 15 pixels because of padding
+            $(".panel").height($(window).height() - $("#header").height() - 15);
+            
+			// setting width of the panels
+			// making the panel width half of the total width of the page
+            $(".panel").width(($(window).width() / 2) - 10);
+            
+			// just calling the function when the page loads
+               updateOutput();
+            
+			// on() function is detecting any change, key press or if user pastes anything in the textareas
+			// and on detecting any chnage the updateOutput() function runs and updates the iframe output
+            $("textarea").on('change keyup paste', function() {
+    
+                updateOutput();
+                
+                
+            });
+			
+			
+			
+			
+			
+			// to show the about us pop up 
+			$("#AboutUs").click(function(){
+			 $( "#dialog" ).dialog();
+			 $(this).toggleClass("active");
+			 
+			});
+            
+    
+
+        </script>
+        
+    </body>
+
+
+</html>
